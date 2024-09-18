@@ -1,9 +1,15 @@
 package com.example.task_management;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-//The Business Logic of the project -
+//The Business Logic of the project
+@Service
 public class UserService {
+
+    @Autowired
     private UserRepository userRepository;
 
     public List<User> getAllUsers() {

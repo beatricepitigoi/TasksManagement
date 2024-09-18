@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 //Dealing with HTTPS requests
+@RestController
+@RequestMapping("/api/users")
 public class UserController {
 
+    @Autowired
     private UserService userService;
 
     @GetMapping

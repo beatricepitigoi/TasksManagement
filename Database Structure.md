@@ -11,7 +11,7 @@ Tabels:
  CREATE DATABASE dbBPTG;
 
  # Create new user
- CREATE USER task_user WITH PASSWORD 'password';
+ CREATE USER beatricepitigoi WITH PASSWORD 'password';
  GRANT ALL PRIVILEGES ON DATABASE task_manager TO task_user;
 
  # Connect to your db
