@@ -1,6 +1,9 @@
 package com.example.task_management;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "users")
@@ -8,6 +11,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -29,35 +33,42 @@ public class User {
 
 
     // Getters și Setters
-    public Long getId() {
+    @JsonProperty("id")
+    public Long getid() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setid(Long id) {
         this.id = id;
     }
 
-    public String getUsername() {
+    @JsonProperty("username")
+    public String getusername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    @JsonProperty("username")
+    public void setusername(String username) {
         this.username = username;
     }
 
-    public String getPassword() {
+    @JsonProperty("password")
+    public String getpassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    @JsonProperty("password")
+    public void setpassword(String password) {
         this.password = password;
     }
 
-    public String getEmail() {
+    @JsonProperty("email")
+    public String getemail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    @JsonProperty("email")
+    public void setemail(String email) {
         this.email = email;
     }
 }

@@ -17,7 +17,9 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 public class SecurityConfig {
 
     /*A mers o singura data, acum am WhiteLabel Error page
-    * TODO: ERROR HANDLING, CHECK AUTH -- LATER*/
+     TODO: ERROR HANDLING, CHECK AUTH -- LATER
+
+     */
 
 
     @Bean
@@ -53,3 +55,4 @@ public class SecurityConfig {
         return manager;
     }
 }
+

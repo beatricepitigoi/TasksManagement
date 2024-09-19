@@ -21,6 +21,11 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        System.out.println(user.getemail()+user.getpassword()+user.getusername());
+
+        if(user.getpassword() == null || user.getpassword().isEmpty()) {
+            throw new RuntimeException("Password cannot be empty");
+        }
         return userRepository.save(user);
     }
 
@@ -28,9 +33,11 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 
+        System.out.println(user.getemail()+user.getpassword()+user.getusername());
 
-        user.setUsername(userDetails.getUsername());
-        user.setPassword(userDetails.getPassword());
+        user.setusername(userDetails.getusername());
+        user.setpassword(userDetails.getpassword());
+        user.setemail(userDetails.getemail());
 
         return userRepository.save(user);
     }
