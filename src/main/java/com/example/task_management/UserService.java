@@ -2,10 +2,9 @@ package com.example.task_management;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
-//The Business Logic of the project
+
 @Service
 public class UserService {
 
@@ -17,19 +16,29 @@ public class UserService {
     }
 
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
     public User createUser(User user) {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, User user) {
-        user.setId(id);
+    public User updateUser(Long id, User userDetails) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+
+        user.setUsername(userDetails.getUsername());
+        user.setPassword(userDetails.getPassword());
+
         return userRepository.save(user);
     }
 
     public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        userRepository.delete(user);
     }
 }
