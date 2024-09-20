@@ -42,7 +42,7 @@ public class Task {
     private User user;
 
     // Relație Many-to-Many cu User
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER) //imi incarca datele deja in app din db
     @JoinTable(
             name = "task_shared", // Tabel intermediar -jpa genereaza autoamt tabel (COOL)
             joinColumns = @JoinColumn(name = "task_id"), // Coloana pentru Tasks

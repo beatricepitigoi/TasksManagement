@@ -3,6 +3,7 @@ package com.example.task_management.Task;
 import com.example.task_management.Task.DTO.TaskDTO;
 import com.example.task_management.User.User;
 import com.example.task_management.User.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +25,13 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
+    @Operation(summary = "Get all tasks")
     @GetMapping
     public List<Task> getAllTasks() {
         return taskService.getAllTasks();
     }
 
+    @Operation(summary = "Get task by id")
     @GetMapping("/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
         Optional<Task> task = taskService.getTaskById(id);
@@ -39,7 +42,7 @@ public class TaskController {
         }
     }
 
-
+    @Operation(summary = "Create a new task")
     @PostMapping("/tasks")
     public Task createTask(@RequestBody TaskDTO taskDTO) {
         Optional<User> userOptional = userRepository.findById(taskDTO.getownerid());
@@ -78,12 +81,14 @@ public class TaskController {
     }
     //---------------------------------------------------------
 
+    @Operation(summary = "Update an existing task")
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody TaskDTO task) {
         Task updatedTask = taskService.updateTask(id, task);
         return updatedTask != null ? ResponseEntity.ok(updatedTask) : ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Delete a task by ID")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
