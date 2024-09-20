@@ -39,6 +39,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Task> tasks;
 
+    // Relație Many-to-Many inversă cu Task
+    @ManyToMany(mappedBy = "sharedUsers") //Funny story: In mappedby: numele atributului din task, nu efectiv un tabel/coloana
+    private Set<Task> sharedTasks;
+
 
     // Getters și Setters
     @JsonProperty("id")

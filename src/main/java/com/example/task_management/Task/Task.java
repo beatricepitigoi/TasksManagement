@@ -41,6 +41,17 @@ public class Task {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // Relație Many-to-Many cu User
+    @ManyToMany
+    @JoinTable(
+            name = "task_shared", // Tabel intermediar -jpa genereaza autoamt tabel (COOL)
+            joinColumns = @JoinColumn(name = "task_id"), // Coloana pentru Tasks
+            inverseJoinColumns = @JoinColumn(name = "user_id") // Coloana pentru Users
+    )
+    private Set<User> sharedUsers;
+
+
+
 
 
     public Task() {
@@ -127,4 +138,11 @@ public class Task {
         this.user = user;
     }
 
+    public Set<User> getsharedusers() {
+        return sharedUsers;
+    }
+
+    public void setsharedusers(Set<User> sharedusers) {
+        this.sharedUsers = sharedusers;
+    }
 }

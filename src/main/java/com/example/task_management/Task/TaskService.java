@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TaskService {
@@ -61,4 +62,49 @@ public class TaskService {
     public void deleteTask(Long id) {
         taskRepository.deleteById(id);
     }
+
+
+    //-------------------- Shared tasks ----------------------------
+    public Task shareTaskWithUsers(Long taskId, Set<Long> userIds) {
+        Optional<Task> taskOptional = taskRepository.findById(taskId);
+
+        if (taskOptional.isPresent()) {
+            Task task = taskOptional.get();
+            Set<User> sharedUsers = task.getsharedusers(); // Obținem utilizatorii existenți
+
+            for (Long userId : userIds) {
+                Optional<User> userOptional = userRepository.findById(userId);
+                if (userOptional.isPresent()) {
+                    sharedUsers.add(userOptional.get()); // Adăugăm utilizatorul la set
+                }
+            }
+
+            task.setsharedusers(sharedUsers);
+            task.setupdatedAt(LocalDateTime.now());
+            return taskRepository.save(task); // Salvăm task-ul cu utilizatorii partajați
+        }
+
+        throw new IllegalArgumentException("Task-ul nu a fost găsit.");
+    }
+
+
+    public Task unshareTaskWithUsers(Long taskId, Set<Long> userIds) {
+        Optional<Task> taskOptional = taskRepository.findById(taskId);
+
+        if (taskOptional.isPresent()) {
+            Task task = taskOptional.get();
+            Set<User> sharedUsers = task.getsharedusers();
+
+            for (Long userId : userIds) {
+                sharedUsers.removeIf(user -> user.getid().equals(userId)); // Scoatem utilizatorul din set
+            }
+
+            task.setsharedusers(sharedUsers);
+            task.setupdatedAt(LocalDateTime.now());
+            return taskRepository.save(task);
+        }
+
+        throw new IllegalArgumentException("Task-ul nu a fost găsit.");
+    }
+
 }

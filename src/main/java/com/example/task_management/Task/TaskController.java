@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -64,7 +65,18 @@ public class TaskController {
         return taskRepository.save(task);
     }
 
-
+    //------------------- Shared Tasks ------------------------
+    @PostMapping("/{id}/share")
+    public ResponseEntity<Task> shareTask(@PathVariable Long id, @RequestBody Set<Long> sharedUserIds) {
+        Task updatedTask = taskService.shareTaskWithUsers(id, sharedUserIds);
+        return ResponseEntity.ok(updatedTask);
+    }
+    @PostMapping("/{id}/unshare")
+    public ResponseEntity<Task> unshareTask(@PathVariable Long id, @RequestBody Set<Long> sharedUserIds) {
+        Task updatedTask = taskService.unshareTaskWithUsers(id, sharedUserIds);
+        return ResponseEntity.ok(updatedTask);
+    }
+    //---------------------------------------------------------
 
     @PutMapping("/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody TaskDTO task) {
