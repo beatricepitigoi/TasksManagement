@@ -69,11 +69,14 @@ public class TaskController {
     }
 
     //------------------- Shared Tasks ------------------------
+    @Operation(summary = "Share the task id with users")
     @PostMapping("/{id}/share")
     public ResponseEntity<Task> shareTask(@PathVariable Long id, @RequestBody Set<Long> sharedUserIds) {
         Task updatedTask = taskService.shareTaskWithUsers(id, sharedUserIds);
         return ResponseEntity.ok(updatedTask);
     }
+
+    @Operation(summary = "Share the task id with users")
     @PostMapping("/{id}/unshare")
     public ResponseEntity<Task> unshareTask(@PathVariable Long id, @RequestBody Set<Long> sharedUserIds) {
         Task updatedTask = taskService.unshareTaskWithUsers(id, sharedUserIds);
