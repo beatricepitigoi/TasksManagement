@@ -1,8 +1,12 @@
-package com.example.task_management;
+package com.example.task_management.User;
 
+import com.example.task_management.Task.Task;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+
+import java.lang.reflect.Array;
+import java.util.Set;
 
 
 @Entity
@@ -30,6 +34,10 @@ public class User {
         this.password = password;
         this.email = email;
     }
+
+    //Legatura Tasks
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Task> tasks;
 
 
     // Getters și Setters

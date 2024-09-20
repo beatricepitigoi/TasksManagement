@@ -1,5 +1,6 @@
-package com.example.task_management;
+package com.example.task_management.Task;
 
+import com.example.task_management.User.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -31,23 +32,21 @@ public class Task {
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private LocalDateTime updatedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Schema(description = "Statusul task-ului", example = "TODO", allowableValues = {"TODO", "IN_PROGRESS", "DONE"})
     @Column(nullable = false)
-    private String status;
-
-    @ElementCollection
-    @CollectionTable(name = "taskShared", joinColumns = @JoinColumn(name = "task_id"))
-    @Column(name = "user_id")
-    private Set<Long> sharedUsers;
+    private TaskStatus status;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
 
+
     public Task() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        this.status = String.valueOf(TaskStatus.OPENED);
+        this.status = TaskStatus.TODO;
     }
 
 
@@ -108,28 +107,24 @@ public class Task {
 
 
     @JsonProperty("status")
-    public String getstatus() {
+    public TaskStatus getstatus() {
         return status;
     }
 
     @JsonProperty("status")
-    public void setstatus(String status) {
+    public void setstatus(TaskStatus status) {
         this.status = status;
     }
 
-    public Set<Long> getsharedUsers() {
-        return sharedUsers;
-    }
 
-    public void setsharedUsers(Set<Long> sharedUsers) {
-        this.sharedUsers = sharedUsers;
-    }
-
+    @JsonProperty("owner_id")
     public User getuser() {
         return user;
     }
 
+    @JsonProperty("owner_id")
     public void setuser(User user) {
         this.user = user;
     }
+
 }

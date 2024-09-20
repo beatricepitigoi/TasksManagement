@@ -1,4 +1,4 @@
-package com.example.task_management;
+package com.example.task_management.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
