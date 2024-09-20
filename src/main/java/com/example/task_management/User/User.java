@@ -4,14 +4,12 @@ import com.example.task_management.Task.Task;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-
-import java.lang.reflect.Array;
 import java.util.Set;
 
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

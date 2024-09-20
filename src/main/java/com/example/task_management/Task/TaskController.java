@@ -1,14 +1,17 @@
 package com.example.task_management.Task;
 
 import com.example.task_management.Task.DTO.TaskDTO;
+import com.example.task_management.User.Security.UserDetailsImpl;
 import com.example.task_management.User.User;
 import com.example.task_management.User.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,10 +28,16 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
-    @Operation(summary = "Get all tasks")
-    @GetMapping
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    @Operation(summary = "Get tasks by user")
+    @GetMapping()
+    public ResponseEntity<Optional<Task>> getAllTasks() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((UserDetailsImpl) authentication.getPrincipal()).getUsername(); //Obține ID-ul utilizatorului din token
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+
+        Optional<Task> tasks = taskRepository.findByUser(user);
+        return ResponseEntity.ok(tasks);
     }
 
     @Operation(summary = "Get task by id")

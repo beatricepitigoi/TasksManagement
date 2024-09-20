@@ -1,6 +1,7 @@
 package com.example.task_management.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -11,6 +12,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -23,11 +26,13 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        System.out.println(user.getemail()+user.getpassword()+user.getusername());
+       // System.out.println(user.getemail()+user.getpassword()+user.getusername());
 
         if(user.getpassword() == null || user.getpassword().isEmpty()) {
             throw new RuntimeException("Password cannot be empty");
         }
+        String encodedPassword = passwordEncoder.encode(user.getpassword());
+        user.setpassword(encodedPassword);
         return userRepository.save(user);
     }
 
