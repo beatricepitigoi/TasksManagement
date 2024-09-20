@@ -4,6 +4,9 @@ import com.example.task_management.Task.Task;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -22,8 +25,25 @@ public class User  {
     @Column(nullable = false)
     private String password;
 
+    @Email(message = "Invalid email address")
     @Column(unique = true)
     private String email;
+
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<String> roles = new HashSet<>();
+
+    @JsonProperty("roles")
+    public Set<String> getroles() {
+        return this.roles;
+    }
+
+    @JsonProperty("roles")
+    public void setroles(HashSet<String> roles) {
+        this.roles = roles;
+    }
 
     //Constructors
     public User() {}

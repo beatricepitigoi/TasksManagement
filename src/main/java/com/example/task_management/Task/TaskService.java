@@ -31,7 +31,26 @@ public class TaskService {
         return Optional.ofNullable(taskRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Task not found")));
     }
 
-    public Task createTask(Task task) {
+    public Task createTask(TaskDTO taskDTO) {
+        Optional<User> userOptional = userRepository.findById(taskDTO.getownerid());
+
+        Task task = new Task();
+        task.settitle(taskDTO.gettitle());
+        task.setdescription(taskDTO.getdescription());
+        task.setstatus(taskDTO.getstatus());
+        System.out.println("useroptional "+userOptional.get().getid()+userOptional.get().getpassword());
+
+        if (taskDTO.getownerid() != null) {
+
+            if (userOptional.isPresent()) {
+                task.setuser(userOptional.get());
+            } else {
+                throw new IllegalArgumentException("User-ul cu acest ID nu există");
+            }
+        } else {
+            throw new IllegalArgumentException("Trebuie să specifici un ownerId valid.");
+        }
+
         task.setcreatedAt(LocalDateTime.now());
         task.setupdatedAt(LocalDateTime.now());
         return taskRepository.save(task);

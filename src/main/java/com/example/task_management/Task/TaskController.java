@@ -8,12 +8,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -28,17 +32,68 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
+    /*
     @Operation(summary = "Get tasks by user")
     @GetMapping()
     public ResponseEntity<Optional<Task>> getAllTasks() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = ((UserDetailsImpl) authentication.getPrincipal()).getUsername(); //Obține ID-ul utilizatorului din token
+        String username = ((UserDetailsImpl) authentication.getPrincipal()).getUsername();
+        //Collection<?> authorities =  ((UserDetailsImpl) authentication.getPrincipal()).getAuthorities();
+        //System.out.println(authorities);
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
 
         Optional<Task> tasks = taskRepository.findByUser(user);
         return ResponseEntity.ok(tasks);
     }
+
+     */
+
+    @Operation(summary = "Get tasks by user")
+    @GetMapping()
+    public ResponseEntity<Optional<List<Task>>> getAllTasks() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Check if the principal is an in-memory user
+        if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
+            // Handle in-memory user
+            org.springframework.security.core.userdetails.User userDetails2 =
+                    (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+
+            // Get roles
+            Collection<GrantedAuthority> authorities = userDetails2.getAuthorities();
+            Set<String> roles = authorities.stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toSet());
+
+            System.out.println("In-memory user roles: " + roles);
+
+            // If the user has the admin role, return all tasks
+            if (roles.contains("ROLE_ADMIN")) {
+                List<Task> allTasks = taskService.getAllTasks(); // Assuming this returns a List<Task>
+                return ResponseEntity.ok(Optional.ofNullable(allTasks)); // Wrap the result in ResponseEntity
+            }
+        } else {
+            // Handle user from your database (e.g. UserDetailsImpl)
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            String username = userDetails.getUsername(); // Get username from token
+
+            // Fetch the user from the database
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
+
+            // Get tasks for the specific user
+            Optional<List<Task>> userTasks = taskRepository.findByUser(user);
+            return ResponseEntity.ok(userTasks);
+        }
+
+        // If the user doesn't match any conditions, return an empty response
+        return ResponseEntity.ok(Optional.empty());
+    }
+
+
+
 
     @Operation(summary = "Get task by id")
     @GetMapping("/{id}")
@@ -54,27 +109,7 @@ public class TaskController {
     @Operation(summary = "Create a new task")
     @PostMapping("/tasks")
     public Task createTask(@RequestBody TaskDTO taskDTO) {
-        Optional<User> userOptional = userRepository.findById(taskDTO.getownerid());
-
-        System.out.println(taskDTO.getownerid()+taskDTO.getdescription()+taskDTO.gettitle()+taskDTO.getstatus());
-        Task task = new Task();
-        task.settitle(taskDTO.gettitle());
-        task.setdescription(taskDTO.getdescription());
-        task.setstatus(taskDTO.getstatus());
-        System.out.println("useroptional "+userOptional.get().getid()+userOptional.get().getpassword());
-        // Verificăm și setăm user-ul dacă ownerId nu este null
-        if (taskDTO.getownerid() != null) {
-
-            if (userOptional.isPresent()) {
-                task.setuser(userOptional.get());
-            } else {
-                throw new IllegalArgumentException("User-ul cu acest ID nu există");
-            }
-        } else {
-            throw new IllegalArgumentException("Trebuie să specifici un ownerId valid.");
-        }
-
-        return taskRepository.save(task);
+        return taskService.createTask(taskDTO);
     }
 
     //------------------- Shared Tasks ------------------------
