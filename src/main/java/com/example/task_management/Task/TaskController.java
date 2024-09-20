@@ -55,13 +55,13 @@ public class TaskController {
     public ResponseEntity<Optional<List<Task>>> getAllTasks() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Check if the principal is an in-memory user
+
         if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {
-            // Handle in-memory user
+
             org.springframework.security.core.userdetails.User userDetails2 =
                     (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
 
-            // Get roles
+
             Collection<GrantedAuthority> authorities = userDetails2.getAuthorities();
             Set<String> roles = authorities.stream()
                     .map(GrantedAuthority::getAuthority)
@@ -69,26 +69,26 @@ public class TaskController {
 
             System.out.println("In-memory user roles: " + roles);
 
-            // If the user has the admin role, return all tasks
+
             if (roles.contains("ROLE_ADMIN")) {
-                List<Task> allTasks = taskService.getAllTasks(); // Assuming this returns a List<Task>
-                return ResponseEntity.ok(Optional.ofNullable(allTasks)); // Wrap the result in ResponseEntity
+                List<Task> allTasks = taskService.getAllTasks();
+                return ResponseEntity.ok(Optional.ofNullable(allTasks));
             }
         } else {
-            // Handle user from your database (e.g. UserDetailsImpl)
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            String username = userDetails.getUsername(); // Get username from token
 
-            // Fetch the user from the database
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            String username = userDetails.getUsername();
+
+
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
 
-            // Get tasks for the specific user
+
             Optional<List<Task>> userTasks = taskRepository.findByUser(user);
             return ResponseEntity.ok(userTasks);
         }
 
-        // If the user doesn't match any conditions, return an empty response
+
         return ResponseEntity.ok(Optional.empty());
     }
 
