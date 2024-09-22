@@ -1,6 +1,7 @@
 package com.example.task_management.Task.DTO;
 
 import com.example.task_management.Task.TaskStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TaskDTO {
@@ -8,6 +9,8 @@ public class TaskDTO {
     private String title;
     private String description;
     private TaskStatus status;
+
+    @JsonIgnore
     private Long ownerId;
 
     @JsonProperty("title")
@@ -41,12 +44,12 @@ public class TaskDTO {
     }
 
 
-    @JsonProperty("owner_id")
+    //@JsonProperty("owner_id")
     public Long getownerid() {
         return ownerId;
     }
 
-    @JsonProperty("owner_id")
+    //@JsonProperty("owner_id")
     public void setownerid(Long ownerId) {
         this.ownerId = ownerId;
     }

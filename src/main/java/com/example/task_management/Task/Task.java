@@ -1,6 +1,7 @@
 package com.example.task_management.Task;
 
 import com.example.task_management.User.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -36,6 +37,8 @@ public class Task {
     @Schema(description = "Statusul task-ului", example = "TODO", allowableValues = {"TODO", "IN_PROGRESS", "DONE"})
     @Column(nullable = false)
     private TaskStatus status;
+
+
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -128,7 +131,7 @@ public class Task {
     }
 
 
-    @JsonProperty("owner_id")
+   @JsonProperty("owner_id")
     public User getuser() {
         return user;
     }
@@ -138,10 +141,12 @@ public class Task {
         this.user = user;
     }
 
+    @JsonProperty("shared_users")
     public Set<User> getsharedusers() {
         return sharedUsers;
     }
 
+    @JsonProperty("shared_users")
     public void setsharedusers(Set<User> sharedusers) {
         this.sharedUsers = sharedusers;
     }

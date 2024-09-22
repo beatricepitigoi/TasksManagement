@@ -109,6 +109,16 @@ public class TaskController {
     @Operation(summary = "Create a new task")
     @PostMapping("/tasks")
     public Task createTask(@RequestBody TaskDTO taskDTO) {
+        //return taskService.createTask(taskDTO);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        taskDTO.setownerid(user.getid());
+
         return taskService.createTask(taskDTO);
     }
 
