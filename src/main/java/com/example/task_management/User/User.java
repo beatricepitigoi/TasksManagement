@@ -1,15 +1,20 @@
 package com.example.task_management.User;
 
 import com.example.task_management.Task.Task;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.util.HashSet;
 import java.util.Set;
 
-
+@JsonIgnoreProperties({"roles"})
 @Entity
 @Table(name = "users")
 public class User  {
@@ -22,12 +27,17 @@ public class User  {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @NotBlank(message = "Password is mandatory")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            message = "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character")
     @Column(nullable = false)
     private String password;
 
     @Email(message = "Invalid email address")
     @Column(unique = true)
     private String email;
+
 
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -44,6 +54,8 @@ public class User  {
     public void setroles(HashSet<String> roles) {
         this.roles = roles;
     }
+
+
 
     //Constructors
     public User() {}

@@ -17,12 +17,15 @@ public class UserDetailsImpl implements UserDetails {
         this.user = user;
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return user.getroles().stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
                 .collect(Collectors.toList());
     }
+
+
 
     @Override
     public String getPassword() {
