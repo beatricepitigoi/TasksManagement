@@ -62,10 +62,18 @@ public class TaskService {
         if (optionalTask.isPresent()) {
             Task task = optionalTask.get();
 
+            if(taskDTO.gettitle() != null) {
+                task.settitle(taskDTO.gettitle());
+            }
 
-            task.settitle(taskDTO.gettitle());
-            task.setdescription(taskDTO.getdescription());
-            task.setstatus(taskDTO.getstatus());
+            if(taskDTO.getdescription() != null) {
+                task.setdescription(taskDTO.getdescription());
+            }
+
+            if(taskDTO.getstatus() != null) {
+                task.setstatus(taskDTO.getstatus());
+            }
+
 
 
             if (taskDTO.getownerid() != null) {
