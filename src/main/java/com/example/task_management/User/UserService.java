@@ -26,7 +26,7 @@ public class UserService {
     }
 
     public User createUser(User user) {
-       // System.out.println(user.getemail()+user.getpassword()+user.getusername());
+        System.out.println(user.getemail()+user.getpassword()+user.getusername());
 
         if(user.getpassword() == null || user.getpassword().isEmpty()) {
             throw new RuntimeException("Password cannot be empty");
