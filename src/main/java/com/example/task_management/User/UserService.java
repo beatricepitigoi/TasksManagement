@@ -42,9 +42,18 @@ public class UserService {
 
         System.out.println(user.getemail()+user.getpassword()+user.getusername());
 
-        user.setusername(userDetails.getusername());
-        user.setpassword(userDetails.getpassword());
-        user.setemail(userDetails.getemail());
+        if(userDetails.getusername() != null) {
+            user.setusername(userDetails.getusername());
+        }
+
+        if (userDetails.getpassword() != null) {
+            String encodedPassword = passwordEncoder.encode(userDetails.getpassword());
+            user.setpassword(encodedPassword);
+        }
+
+        if(userDetails.getemail() != null) {
+            user.setemail(userDetails.getemail());
+        }
 
         return userRepository.save(user);
     }
